@@ -1,0 +1,16 @@
+use docker 
+use jetstream 
+use memecached 
+use scopes , accessors , mutators 
+use event and observers 
+integrate with pusher 
+use chunking and lazy loading 
+use horizon redis & queues 
+use pest in testing 
+create localization 
+and multi tenancy 
+create laravel macros 
+make notification 
+ci cd integration 
+integrate with s3 and ses  and lambda 
+job chaining and batching 
