@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Support\Facades\Route;
+
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -10,6 +12,21 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+          then: function () {
+            $modules = [
+                'User' => ['path' => 'app/Modules/User/adminRoutes.php', 'prefix' => 'api/admin'],
+                'Auth' => ['path' => 'app/Modules/Auth/authRoutes.php', 'prefix' => 'api/auth'],
+            ];
+
+            foreach ($modules as $module) {
+                $file = base_path($module['path']);
+                if (file_exists($file)) {
+                    Route::middleware(['api'])
+                        ->prefix($module['prefix'])
+                        ->group($file);
+                }
+            }
+        }
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
