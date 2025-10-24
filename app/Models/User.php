@@ -8,11 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
+use Illuminate\Database\Eloquent\Builder;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens;
+    use HasApiTokens, Notifiable;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
@@ -29,6 +30,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
+        'role',
     ];
 
     /**
@@ -62,6 +65,17 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+
         ];
+    }
+    public function scopeActive(Builder $query): Builder
+        {
+            return $query->where('is_active', true);
+        }
+
+    public function scopeInactive(Builder $query): Builder
+    {
+        return $query->where('is_active', false);
     }
 }
