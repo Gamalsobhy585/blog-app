@@ -1,10 +1,13 @@
 use docker 
 use jetstream 
 use memecached 
-use scopes , accessors , mutators 
+use scopes , accessors , mutators     
+local scope +++
 use event and observers 
 integrate with pusher 
-use chunking and lazy loading 
+use chunking and lazy loading
+payment integration
+use action and dto  +++  
 use horizon redis & queues 
 use pest in testing 
 create localization 
@@ -14,3 +17,4 @@ make notification
 ci cd integration 
 integrate with s3 and ses  and lambda 
 job chaining and batching 
+use device_token +++ 
