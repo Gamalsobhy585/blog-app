@@ -11,21 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('authors', function (Blueprint $table) {
+        Schema::create('members', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->text('bio')->nullable();
-            $table->string('nationality')->nullable();
+            $table->string('email')->unique();
+            $table->date('membership_date');
+            $table->enum('status', ['1', '2'])->comment(
+                '1=active, 2=inactive'
+            )->default('1');
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
+            
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('authors');
+        Schema::dropIfExists('members');
     }
 };

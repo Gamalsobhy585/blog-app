@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('isbn')->unique();
@@ -21,7 +22,6 @@ return new class extends Migration
             $table->integer('total_copies')->default(0);
             $table->integer('available_copies')->default(0);
             $table->string('cover_image')->nullable();
-            
             $table->decimal('price', 8, 2)->nullable();
             $table->enum('status', ['available', 'unavailable'])->default('available');
             $table->foreignId('author_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
