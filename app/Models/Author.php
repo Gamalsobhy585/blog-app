@@ -15,6 +15,7 @@ class Author extends Model
         'name',
         'bio',  
         'nationality',
+        'is_approved',
     ];
     public function books()
     {
