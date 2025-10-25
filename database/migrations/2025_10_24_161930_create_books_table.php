@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('published_at')->nullable();
             $table->integer('total_copies')->default(0);
             $table->integer('available_copies')->default(0);
+            $table->boolean('is_approved')->default(0);
+
             $table->string('cover_image')->nullable();
             $table->decimal('price', 8, 2)->nullable();
             $table->enum('status', ['available', 'unavailable'])->default('available');
