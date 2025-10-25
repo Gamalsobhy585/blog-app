@@ -1,19 +1,20 @@
 <?php
 
 namespace App\Models;
+use App\Traits\HasUuid;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
-    /** @use HasFactory<\Database\Factories\BookFactory> */
-    use HasFactory;
+    use HasUuid,HasFactory;
 
 
     protected $fillable = [
         'title',
         'description',
+        'uuid',
         'isbn',
         'genre',
         'published_at',
@@ -39,5 +40,28 @@ class Book extends Model
     {
         return $this->hasMany(Borrowing::class);
     }
+    // public function returnBook()
+    // {
+    //     if($this->available_copies < $this->total_copies)
+    //     {
+    //         $this->available_copies += 1;
+    //         $this->save();
+    //     }
+    // }
+    // public function borrowBook()
+    // {
+    //     if($this->available_copies > 0)
+    //     {
+    //         $this->available_copies -= 1;
+    //         $this->save();
+    //     }
+    // }
+
+    public function isAvailable()
+    {
+        return $this->available_copies > 0;
+    }
+
+
 
 }

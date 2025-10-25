@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Models;
+use App\Traits\HasUuid;
+
 
 use Illuminate\Database\Eloquent\Model;
 
 class Author extends Model
 {
+    use HasUuid;
+
     protected $fillable = [
-        // name , bio ,nationality
+        'uuid',
         'name',
         'bio',  
         'nationality',

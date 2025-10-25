@@ -10,10 +10,11 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Illuminate\Database\Eloquent\Builder;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\HasUuid;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, HasUuid;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
@@ -32,6 +33,7 @@ class User extends Authenticatable
         'password',
         'is_active',
         'role',
+        'uuid'
     ];
 
     /**
