@@ -1,4 +1,5 @@
 <?php
+// UpdateAuthorData.php
 namespace App\Modules\Author\DTOs;
 
 use Illuminate\Http\Request;
@@ -20,6 +21,12 @@ class UpdateAuthorData
         );
     }
 
-
+    public function toArray(): array
+    {
+        return array_filter([
+            'name' => $this->name,
+            'bio' => $this->bio,
+            'nationality' => $this->nationality,
+        ], fn($value) => !is_null($value));
+    }
 }
-

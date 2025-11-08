@@ -1,5 +1,6 @@
 <?php
 
+// CreateAuthorData.php
 namespace App\Modules\Author\DTOs;
 
 use Illuminate\Http\Request;
@@ -21,5 +22,12 @@ class CreateAuthorData
         );
     }
 
-
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'bio' => $this->bio,
+            'nationality' => $this->nationality,
+        ];
+    }
 }
