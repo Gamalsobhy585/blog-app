@@ -15,7 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
 then: function () {
     $modules = [
         'User' => ['path' => 'app/Modules/User/adminRoutes.php', 'prefix' => 'api/admin'],
-        'Auth' => ['path' => 'app/Modules/Auth/authRoutes.php', 'prefix' => 'api/auth'],
+        'Auth' => ['path' => 'app/Modules/Auth/authRoutes.php', 'prefix' => 'api/'],
+        'Author' => ['path' => 'app/Modules/Author/routes/author.php', 'prefix' => 'api/'],
     ];
 
     foreach ($modules as $module) {
@@ -28,8 +29,11 @@ then: function () {
     }
 }
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
+    ->withMiddleware(function (Middleware $middleware): array {
+        return [
+            'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+            'isLibrarian' => \App\Http\Middleware\IsLibrarian::class,
+        ];
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
