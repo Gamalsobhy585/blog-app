@@ -20,25 +20,24 @@ use Illuminate\Support\Facades\Password;
 class AuthController extends Controller
 {
     public function __construct(
-        private readonly RegisterUser $registerUser,
-        private readonly LoginUser $loginUser,
         private readonly LogoutUser $logoutUser,
-        private readonly ResetPassword $resetPassword,
     ) {}
 
     public function register(RegisterRequest $request, RegisterUser $action)
     {
-        $result = $action->execute(RegisterUserData::fromRequest($request->validated()));
-        
+        $result = $action->execute(
+            RegisterUserData::fromRequest($request)
+        );
 
         return response()->json([
             'message' => 'Registration successful',
-            'status' => 'success',
-            'data' => $result->toArray(),
+            'status'  => 'success',
+            'data'    => $result->toArray(),
         ], 201);
     }
 
-    public function login(LoginRequest $request, LoginUser $action)
+
+    public function login(LoginRequest $request, LoginUser $action) : JsonResponse
     {
         $result = $action->execute(LoginUserData::fromRequest($request->validated()));
 
