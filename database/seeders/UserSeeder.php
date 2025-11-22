@@ -29,5 +29,20 @@ class UserSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+        DB::table('users')->insert([
+            'uuid' => Str::uuid(),
+            'name' => 'librarian',
+            'email' => 'Librarian@library.com',
+            'password' => Hash::make('123456789', [
+                'memory' => 1024,       
+                'time' => 2,           
+                'threads' => 2,        
+                'type' => PASSWORD_ARGON2ID
+            ]),
+            'role' => 2, // 1=admin
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }
