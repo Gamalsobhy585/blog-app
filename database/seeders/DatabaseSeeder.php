@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
         UserSeeder::class,
         
         );
+        $this->call(
+            AuthorSeeder::class,
+        );
     }
 }
