@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
                 'threads' => 2,        
                 'type' => PASSWORD_ARGON2ID
             ]),
-            'role' => 1, // 1=admin
+            'role' => '1', 
             'is_active' => true,
             'created_at' => now(),
             'updated_at' => now(),
@@ -39,7 +39,22 @@ class UserSeeder extends Seeder
                 'threads' => 2,        
                 'type' => PASSWORD_ARGON2ID
             ]),
-            'role' => 2, // 1=admin
+            'role' => '2', 
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('users')->insert([
+            'uuid' => Str::uuid(),
+            'name' => 'user',
+            'email' => 'user@library.com',
+            'password' => Hash::make('123456789', [
+                'memory' => 1024,       
+                'time' => 2,           
+                'threads' => 2,        
+                'type' => PASSWORD_ARGON2ID
+            ]),
+            'role' => '3', 
             'is_active' => true,
             'created_at' => now(),
             'updated_at' => now(),

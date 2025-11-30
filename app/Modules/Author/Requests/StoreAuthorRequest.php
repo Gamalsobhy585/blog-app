@@ -4,12 +4,14 @@
 namespace App\Modules\Author\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreAuthorRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->role === 1 || $this->user()->role === 2;
+         return in_array($this->user()->role, ['1', '2']); 
     }
 
     public function rules(): array
