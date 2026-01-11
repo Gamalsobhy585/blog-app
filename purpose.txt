@@ -1,25 +1,41 @@
-use docker 
-use jetstream 
+use docker ----
+
+Queue --------
+use event and observers----------
+use chunking---------- 
+payment integration -----------------
+use horizon redis & queues  ---------
+use pest in testing ----------
+create laravel macros ------
+ci cd integration -------
+integrate with ses and lambda  ----
+job chaining and batching -------------
+
+
+
+
 use memecached +++++
 use scopes , accessors , mutators  +++++  
-local scope +++
-use event and observers 
-integrate with pusher 
-use chunking and lazy loading  ----
-payment integration
-use action and dto  +++  
-use horizon redis & queues 
-use pest in testing 
-create localization  ++
-and multi tenancy 
-create laravel macros 
-make notification 
-ci cd integration 
-integrate with s3 ++
-integrate with ses and lambda ++ 
-job chaining and batching 
+local scope +++++++++
+integuse action and dto  +++  
+rate with pusher ++++++
+create localization  ++++++
+make notification ++++
+integrate with s3 +++++
 use device_token +++ 
-policy++
-full texting search 
- gates 
-Queue
+policy+++++
+full texting search +++++++++++
+
+
+
+
+
+articles to read in laravel 
+the basics module
+responses------------------
+views-----------------
+error handing ------------------
+logging--------------
+validation----------------
+session----------------
+

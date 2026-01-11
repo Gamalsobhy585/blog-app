@@ -11,8 +11,6 @@ use App\Models\Author;
 use App\Modules\Author\Policies\AuthorPolicy;
 use App\Modules\Author\Events\AuthorPendingApproval;
 use App\Modules\Author\Events\AuthorCreated;
-use App\Modules\Author\Events\AuthorUpdated;
-use App\Modules\Author\Events\AuthorDeleted;
 use App\Modules\Author\Listeners\SendAuthorApprovalNotification;
 use App\Modules\Author\Listeners\IndexAuthorInElasticsearch;
 class AppServiceProvider extends ServiceProvider
@@ -42,15 +40,8 @@ class AppServiceProvider extends ServiceProvider
             IndexAuthorInElasticsearch::class,
         );
 
-        Event::listen(
-            AuthorUpdated::class,
-            IndexAuthorInElasticsearch::class,
-        );
-
-        Event::listen(
-            AuthorDeleted::class,
-            IndexAuthorInElasticsearch::class,
-        );
+       
+       
     
 
     }
