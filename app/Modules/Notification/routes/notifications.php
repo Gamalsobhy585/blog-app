@@ -9,7 +9,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('notifications.index');
 
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
-        ->name('notifications.markAsRead');
+        ->name('notifications.markNoitificationAsRead');
     // Get unread notifications count
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
         ->name('notifications.unreadCount');

@@ -1,7 +1,6 @@
 use docker ----
-
 Queue --------
-use event and observers----------
+use event and observers---------- 8/02
 use chunking---------- 
 payment integration -----------------
 use horizon redis & queues  ---------
@@ -32,7 +31,7 @@ full texting search +++++++++++
 
 articles to read in laravel 
 the basics module
-responses------------------
+responses------------------ 8/02 
 views-----------------
 error handing ------------------
 logging--------------
