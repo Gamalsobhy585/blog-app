@@ -2,17 +2,19 @@
 
 namespace App\Providers;
 
+use App\Models\Author;
 use App\Models\PersonalAccessToken;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\ServiceProvider;
+use App\Modules\Author\Events\AuthorCreated;
+use App\Modules\Author\Events\AuthorPendingApproval;
+use App\Modules\Author\Listeners\IndexAuthorInElasticsearch;
+use App\Modules\Author\Listeners\SendAuthorApprovalNotification;
+use App\Modules\Author\Policies\AuthorPolicy;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
-use App\Models\Author;
-use App\Modules\Author\Policies\AuthorPolicy;
-use App\Modules\Author\Events\AuthorPendingApproval;
-use App\Modules\Author\Events\AuthorCreated;
-use App\Modules\Author\Listeners\SendAuthorApprovalNotification;
-use App\Modules\Author\Listeners\IndexAuthorInElasticsearch;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -28,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+            Schema::defaultStringLength(191);
+
+
             Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
             Gate::policy(Author::class, AuthorPolicy::class);
 
