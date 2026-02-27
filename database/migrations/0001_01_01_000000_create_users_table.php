@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->boolean('is_active')->default(true);
-            $table->enum('role',[1,2,3])->default(3)->comment('1=admin,2=librarian,3=member'); 
+             
 
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

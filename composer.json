@@ -15,7 +15,8 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^3.6.4",
         "predis/predis": "^3.2",
-        "pusher/pusher-php-server": "^7.2"
+        "pusher/pusher-php-server": "^7.2",
+        "spatie/laravel-permission": "^6.24"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -23,9 +24,7 @@
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "pestphp/pest": "*",
-        "pestphp/pest-plugin-laravel": "*"
+        "nunomaduro/collision": "^8.6"
     },
     "autoload": {
         "psr-4": {

@@ -5,7 +5,6 @@ namespace App\Modules\Auth\Actions;
 use App\Models\User;
 use App\Modules\Auth\DTOs\RegisterResultData;
 use App\Modules\Auth\DTOs\RegisterUserData;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Registered;
 use App\Modules\Auth\Exceptions\UserRegistrationException;
@@ -25,7 +24,6 @@ use App\Modules\Auth\Exceptions\UserRegistrationException;
                             'time_cost' => 2,
                             'threads' => 2,
                         ]),
-                        'role' => $data->role,
                         'profile_photo_path' => $data->profile_photo_path,
                         'is_active' => true,
                         

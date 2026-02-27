@@ -3,15 +3,16 @@
 namespace App\Modules\Auth\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Auth\Actions\RegisterUser;
+use App\Http\Resources\UserResource;
 use App\Modules\Auth\Actions\LoginUser;
 use App\Modules\Auth\Actions\LogoutUser;
+use App\Modules\Auth\Actions\RegisterUser;
 use App\Modules\Auth\Actions\ResetPassword;
-use App\Modules\Auth\DTOs\RegisterUserData;
 use App\Modules\Auth\DTOs\LoginUserData;
+use App\Modules\Auth\DTOs\RegisterUserData;
 use App\Modules\Auth\DTOs\ResetPasswordData;
-use App\Modules\Auth\Requests\RegisterRequest;
 use App\Modules\Auth\Requests\LoginRequest;
+use App\Modules\Auth\Requests\RegisterRequest;
 use App\Modules\Auth\Requests\ResetPasswordRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -87,5 +88,14 @@ class AuthController extends Controller
             'data' => $result->toArray(),
         ], 200);
     }
+
+
+        public function me(Request $request): JsonResponse
+        {
+            return response()->json([
+                'status' => 'success',
+                'data'   => new UserResource($request->user()),
+            ]);
+        }
 
 }

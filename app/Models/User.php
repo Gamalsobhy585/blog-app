@@ -3,19 +3,23 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
-use Illuminate\Database\Eloquent\Builder;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Storage;
-use App\Traits\HasUuid;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, HasUuid;
+    use HasRoles;
+
+
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
@@ -33,7 +37,6 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
-        'role',
         'uuid',
         'profile_photo_path',
 
@@ -70,7 +73,6 @@ class User extends Authenticatable
      */
     protected $appends = [
             'profile_photo_url',
-             'role_name',
             'active_string',
 
     ];

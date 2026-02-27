@@ -2,62 +2,49 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table('users')->insert([
-            'uuid' => Str::uuid(),
-            'name' => 'admin',
-            'email' => 'Admin@library.com',
-            'password' => Hash::make('123456789', [
-                'memory' => 1024,       
-                'time' => 2,           
-                'threads' => 2,        
-                'type' => PASSWORD_ARGON2ID
-            ]),
-            'role' => '1', 
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        DB::table('users')->insert([
-            'uuid' => Str::uuid(),
-            'name' => 'librarian',
-            'email' => 'Librarian@library.com',
-            'password' => Hash::make('123456789', [
-                'memory' => 1024,       
-                'time' => 2,           
-                'threads' => 2,        
-                'type' => PASSWORD_ARGON2ID
-            ]),
-            'role' => '2', 
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-        DB::table('users')->insert([
-            'uuid' => Str::uuid(),
-            'name' => 'user',
-            'email' => 'user@library.com',
-            'password' => Hash::make('123456789', [
-                'memory' => 1024,       
-                'time' => 2,           
-                'threads' => 2,        
-                'type' => PASSWORD_ARGON2ID
-            ]),
-            'role' => '3', 
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $admin = User::updateOrCreate(
+            ['email' => 'admin@library.com'],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => 'Admin',
+                'password' => Hash::make('123456789'), // Laravel uses argon2id automatically
+                'is_active' => true,
+            ]
+        );
+
+        $admin->syncRoles(['admin']);
+
+        $librarian = User::updateOrCreate(
+            ['email' => 'librarian@library.com'],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => 'Librarian',
+                'password' => Hash::make('123456789'),
+                'is_active' => true,
+            ]
+        );
+
+        $librarian->syncRoles(['librarian']);
+
+        $member = User::updateOrCreate(
+            ['email' => 'user@library.com'],
+            [
+                'uuid' => (string) Str::uuid(),
+                'name' => 'User',
+                'password' => Hash::make('123456789'),
+                'is_active' => true,
+            ]
+        );
+
+        $member->syncRoles(['member']);
     }
 }

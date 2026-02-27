@@ -1,0 +1,368 @@
+0) Project Standards
+
+API-only (recommended) + optional Admin panel later
+
+Auth: Laravel Sanctum (API tokens) or session-based (pick one and keep consistent)
+
+Response format: API Resources + consistent {success, message, data, meta}
+
+Validation: FormRequest per endpoint
+
+DTO + Actions: For each module (you already use)
+
+DB: MySQL (with proper indexes + constraints)
+
+Cache: Redis (tags where needed)
+
+Queue: Redis queue
+
+Real-time: Pusher (or Reverb later)
+
+Docs: OpenAPI/Swagger (or Postman collection + README)
+
+Docker: app + db + redis + (optional) elasticsearch + mailhog
+
+1) Authentication Module
+Endpoints
+
+POST /api/auth/register ✅ 
+
+POST /api/auth/login ✅ 
+
+POST /api/auth/logout ✅ 
+
+GET /api/auth/me✅ 
+
+
+Tech to use
+
+Sanctum ✅ 
+ 
+FormRequest validation ✅ 
+
+Rate limiting (throttle) ✅ 
+
+
+2) Authorization Module (Roles & Permissions)
+Concepts
+
+Roles: admin, librarian, member  
+
+Permissions: approve authors, manage books, approve borrowing, etc.
+
+Endpoints
+
+GET /api/roles (admin)
+
+POST /api/users/{id}/role (admin)
+
+GET /api/permissions (admin)
+
+Tech to use
+
+Policies (must)
+
+Gates (optional)
+
+
+
+
+
+
+Middleware: role:admin / can:approve-author
+
+3) Authors Module
+Endpoints
+
+GET /api/authors (filters + pagination)
+
+POST /api/authors (member creates → pending if not admin)
+
+GET /api/authors/{uuid}
+
+PUT /api/authors/{uuid} (owner/admin)
+
+DELETE /api/authors/{uuid} (admin)
+
+POST /api/authors/{uuid}/approve (admin/librarian)
+
+POST /api/authors/{uuid}/reject (admin/librarian)
+
+Tech to use
+
+DTO + Action per use case
+
+Policy checks (update/delete/approve)
+
+Events:
+
+AuthorCreated
+
+AuthorApproved
+
+AuthorRejected
+
+Notifications:
+
+Notify creator on approve/reject
+
+Notify admins when pending
+
+Cache:
+
+Cache list endpoint
+
+Invalidate on create/update/approve/reject
+
+Search:
+
+Full-text search (DB or Elasticsearch if you want)
+
+4) Books Module
+Endpoints
+
+GET /api/books (filters + sort + pagination)
+
+POST /api/books (admin/librarian)
+
+GET /api/books/{uuid}
+
+PUT /api/books/{uuid} (admin/librarian)
+
+DELETE /api/books/{uuid} (admin)
+
+POST /api/books/{uuid}/publish (optional)
+
+POST /api/books/{uuid}/archive (optional)
+
+Filters (important)
+
+author_uuid
+
+category
+
+available=1
+
+q= (search title/description)
+
+sort: latest, popular, title
+
+Tech to use
+
+Slugs (optional)
+
+Scopes for filters
+
+Accessors for computed fields:
+
+is_available
+
+available_copies
+
+Observer:
+
+audit created_by/updated_by
+
+Cache:
+
+books list
+
+book details
+
+Chunking:
+
+bulk import books from CSV (job)
+
+5) Borrowing Module (Core Business Logic)
+Entities
+
+BorrowRequest / BorrowTransaction
+
+Statuses: pending, approved, rejected, borrowed, returned, overdue
+
+Endpoints
+
+POST /api/borrow-requests (member)
+
+body: book_uuid, expected_days
+
+GET /api/borrow-requests (admin/librarian) filters by status
+
+GET /api/my/borrow-requests (member)
+
+POST /api/borrow-requests/{uuid}/approve (admin/librarian)
+
+POST /api/borrow-requests/{uuid}/reject (admin/librarian)
+
+POST /api/borrow-requests/{uuid}/return (admin/librarian or member if allowed)
+
+GET /api/borrowings (reporting)
+
+GET /api/my/borrowings
+
+Tech to use (this is where you show maturity)
+
+DB Transactions
+
+Row locking to prevent double-borrow:
+
+lockForUpdate() on book copies
+
+Events:
+
+BorrowRequested
+
+BorrowApproved
+
+BorrowRejected
+
+BookReturned
+
+BorrowOverdue
+
+Notifications:
+
+to member on approve/reject/overdue
+
+to admins when requested
+
+Queue Jobs:
+
+send notifications async
+
+compute overdue penalties
+
+Scheduled task (Cron):
+
+daily check overdue borrowings
+
+Policies:
+
+member can only see own
+
+6) Approval System Module (Generic)
+
+Instead of building approval separately for each module, make a small generic system.
+
+Endpoints
+
+GET /api/approvals (admin/librarian)
+
+POST /api/approvals/{uuid}/approve
+
+POST /api/approvals/{uuid}/reject
+
+Tech to use
+
+Polymorphic approvable_type / approvable_id
+
+Events + Notifications
+
+This makes your project look “enterprise”.
+
+7) Notifications + Realtime Module
+Endpoints
+
+GET /api/notifications
+
+POST /api/notifications/{id}/read
+
+POST /api/notifications/read-all
+
+Tech to use
+
+Database notifications
+
+Broadcast notifications (Pusher now, Reverb later)
+
+Queue notifications
+
+Device tokens (optional) if you want push notifications later
+
+8) Admin Reporting Module (Simple but strong)
+Endpoints
+
+GET /api/admin/stats
+
+total books, available books
+
+pending approvals
+
+active borrowings
+
+overdue count
+
+GET /api/admin/reports/borrowings?from=&to=
+
+GET /api/admin/reports/top-books
+
+Tech to use
+
+DB indexes + optimized queries
+
+Caching for stats
+
+9) Testing Module
+What to cover (minimum)
+
+Auth: register/login
+
+Authors: create pending + approve
+
+Books: create/list/filter
+
+Borrow: request → approve → return
+
+Policy tests: unauthorized actions fail
+
+Tech to use
+
+PHP 8.2 → Pest v3 or PHPUnit
+
+Factories + seeders
+
+Fake notifications + fake events
+
+10) CI/CD (GitHub Actions)
+Pipeline steps
+
+Install dependencies
+
+Run pint/phpcs
+
+Run tests
+
+(optional) build docker image
+
+11) Docker Setup
+Services
+
+app (php-fpm)
+
+nginx
+
+mysql
+
+redis
+
+mailhog (optional)
+
+elasticsearch (optional)
+
+“Tech Checklist” per module (quick mapping)
+
+Auth: Sanctum + throttle + requests
+
+Authors: DTO/Action + Policy + Events + Notifications + Cache
+
+Books: Scopes + Accessors + Observers + Cache + Bulk import job
+
+Borrowing: Transactions + Locking + Events + Jobs + Cron + Notifications
+
+Approvals: Polymorphic + Events + admin endpoints
+
+Notifications: DB + broadcast + queue
+
+Testing: feature tests for the critical flows
+
+CI: actions runner

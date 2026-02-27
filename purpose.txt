@@ -9,11 +9,18 @@ create laravel macros ------
 ci cd integration -------
 integrate with ses and lambda  ----
 job chaining and batching -------------
+RabbitMQ----------------
+crone jobs------
+new ways for documentation-----------------
+Reverb websockets / Go websockets ----------------------
+ DB modeling and performance-----------------------
+ DB Views-----------------
+ ClickHouse-------------------
+ API versioning---------------
+  Kubernetes----------
 
 
 
-
-use memecached +++++
 use scopes , accessors , mutators  +++++  
 local scope +++++++++
 integuse action and dto  +++  

@@ -10,7 +10,6 @@ class RegisterUserData
         public readonly string $name,
         public readonly string $email,
         public readonly string $password,
-        public readonly int $role,
         public readonly ?string $profile_photo_path = null,
     ) {}
 
@@ -26,7 +25,6 @@ class RegisterUserData
             name: $request->input('name'),
             email: $request->input('email'),
             password: $request->input('password'),
-            role: (int) $request->input('role'),
             profile_photo_path: $profilePhotoPath,
         );
     }
