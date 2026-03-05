@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Modules\Author\DTOs;
 
 use App\Models\Author;
@@ -8,6 +9,7 @@ class AuthorData
     public function __construct(
         public readonly string $uuid,
         public readonly string $name,
+        public readonly string $slug,
         public readonly ?string $bio,
         public readonly ?string $nationality,
         public readonly bool $isApproved,
@@ -19,10 +21,11 @@ class AuthorData
         return new self(
             uuid: $author->uuid,
             name: $author->name,
+            slug: $author->slug,
             bio: $author->bio,
             nationality: $author->nationality,
-            isApproved: $author->is_approved,
-            createdAt: $author->created_at->toDateTimeString(),
+            isApproved: (bool) $author->is_approved,
+            createdAt: $author->created_at?->toDateTimeString() ?? now()->toDateTimeString(),
         );
     }
 
@@ -31,6 +34,7 @@ class AuthorData
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
+            'slug' => $this->slug,
             'bio' => $this->bio,
             'nationality' => $this->nationality,
             'is_approved' => $this->isApproved,

@@ -18,6 +18,6 @@ class GetUsers
             default => $query, // all
         };
 
-        return $query->latest()->get(['id', 'name', 'email', 'is_active', 'role']);
+        return $query->latest()->get(['id', 'name', 'email', 'is_active']);
     }
 }

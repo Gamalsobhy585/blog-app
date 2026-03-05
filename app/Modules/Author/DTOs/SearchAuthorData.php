@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Modules\Author\DTOs;
 
 use Illuminate\Http\Request;
@@ -9,8 +10,12 @@ class SearchAuthorData
         public readonly ?string $search = null,
         public readonly ?string $nationality = null,
         public readonly ?bool $approved = null,
-        public readonly int $page = 1,
+
+        // Cursor pagination (Facebook-like)
+        public readonly ?string $cursor = null,
         public readonly int $perPage = 15,
+
+        // Sorting (must be deterministic for cursor pagination)
         public readonly string $sortBy = 'created_at',
         public readonly string $sortOrder = 'desc',
     ) {}
@@ -20,9 +25,11 @@ class SearchAuthorData
         return new self(
             search: $request->input('search'),
             nationality: $request->input('nationality'),
-            approved: $request->boolean('approved', null),
-            page: $request->integer('page', 1),
+            approved: $request->has('approved') ? $request->boolean('approved') : null,
+
+            cursor: $request->input('cursor'),        
             perPage: $request->integer('per_page', 15),
+
             sortBy: $request->input('sort_by', 'created_at'),
             sortOrder: $request->input('sort_order', 'desc'),
         );
@@ -34,7 +41,7 @@ class SearchAuthorData
             'search' => $this->search,
             'nationality' => $this->nationality,
             'approved' => $this->approved,
-            'page' => $this->page,
+            'cursor' => $this->cursor,
             'per_page' => $this->perPage,
             'sort_by' => $this->sortBy,
             'sort_order' => $this->sortOrder,

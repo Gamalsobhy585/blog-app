@@ -8,11 +8,10 @@ use App\Modules\Author\Events\AuthorCreated;
 use App\Modules\Author\Events\AuthorPendingApproval;
 use App\Modules\Author\Listeners\IndexAuthorInElasticsearch;
 use App\Modules\Author\Listeners\SendAuthorApprovalNotification;
-use App\Modules\Author\Policies\AuthorPolicy;
+use App\Observers\AuthorObserver;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -35,7 +34,8 @@ class AppServiceProvider extends ServiceProvider
     {
                     Schema::defaultStringLength(191);
 
-                    
+                        Author::observe(AuthorObserver::class);
+
             RateLimiter::for('auth', function (Request $request) {
                 $key = strtolower((string) $request->input('email')) ?: $request->ip();
                 return Limit::perMinute(10)->by($key);
@@ -49,7 +49,6 @@ class AppServiceProvider extends ServiceProvider
 
 
             Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
-            Gate::policy(Author::class, AuthorPolicy::class);
 
             Event::listen(
             AuthorPendingApproval::class,

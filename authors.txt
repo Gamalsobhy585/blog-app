@@ -1,0 +1,11 @@
+name,bio,nationality
+Naguib Mahfouz,Egyptian novelist and Nobel Prize winner,Egypt
+William Shakespeare,English playwright and poet,United Kingdom
+Fyodor Dostoevsky,Russian novelist known for psychological depth,Russia
+Jane Austen,English novelist known for realism,United Kingdom
+Gabriel Garcia Marquez,Colombian novelist and magical realism author,Colombia
+Ernest Hemingway,American novelist and short story writer,United States
+Leo Tolstoy,Russian writer and philosopher,Russia
+Mark Twain,American writer and humorist,United States
+Victor Hugo,French poet and novelist,France
+Khalil Gibran,Lebanese writer and philosopher,Lebanon

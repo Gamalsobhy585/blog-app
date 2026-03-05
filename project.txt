@@ -46,23 +46,22 @@ Rate limiting (throttle) ✅
 2) Authorization Module (Roles & Permissions)
 Concepts
 
-Roles: admin, librarian, member  
+Roles: admin, librarian, member   
 
 Permissions: approve authors, manage books, approve borrowing, etc.
 
 Endpoints
 
-GET /api/roles (admin)
+GET /api/roles (admin) ✅ 
 
-POST /api/users/{id}/role (admin)
+POST /api/users/{id}/role (admin) ✅ 
 
-GET /api/permissions (admin)
+GET /api/permissions (admin) ✅ 
 
 Tech to use
 
 Policies (must)
 
-Gates (optional)
 
 
 
@@ -71,52 +70,57 @@ Gates (optional)
 
 Middleware: role:admin / can:approve-author
 
+
+
+
+
+
+
+
+
+
+
 3) Authors Module
 Endpoints
 
-GET /api/authors (filters + pagination)
+
+
+
+list Authors: 
+
+GET /api/authors (filters + pagination)✅ 
+cache using redis ✅
+full text search ✅
+pagination using cursor like facebook feedback ✅
+using action and controller and dto ✅
+using slugs in it ✅
+
+
+later 
+observer 
+chunking for csv 
+
+
 
 POST /api/authors (member creates → pending if not admin)
-
-GET /api/authors/{uuid}
-
-PUT /api/authors/{uuid} (owner/admin)
-
-DELETE /api/authors/{uuid} (admin)
-
 POST /api/authors/{uuid}/approve (admin/librarian)
 
 POST /api/authors/{uuid}/reject (admin/librarian)
 
-Tech to use
+observer ✅
+chunking for csv import ✅
+authoirzation laravel spatie we are using role(admin can create(approved automatically)/ approve in case of librarian /reject in case of librarian /delete/update) while (librarian can create  ) ✅
+notifications using pusher to notify admins when pending and notify creator on approve/reject ✅
 
-DTO + Action per use case
 
-Policy checks (update/delete/approve)
 
-Events:
 
-AuthorCreated
 
-AuthorApproved
 
-AuthorRejected
 
-Notifications:
 
-Notify creator on approve/reject
 
-Notify admins when pending
 
-Cache:
-
-Cache list endpoint
-
-Invalidate on create/update/approve/reject
-
-Search:
-
-Full-text search (DB or Elasticsearch if you want)
 
 4) Books Module
 Endpoints
@@ -149,7 +153,9 @@ sort: latest, popular, title
 
 Tech to use
 
-Slugs (optional)
+Slugs 
+search with slugs 
+enum file (modularity)
 
 Scopes for filters
 
@@ -172,6 +178,18 @@ book details
 Chunking:
 
 bulk import books from CSV (job)
+aws s3 for storing book cover images 
+pusher for notifying admins when new book is added 
+
+setup horizon for running jobs and schedule tasks
+
+
+
+
+
+
+
+
 
 5) Borrowing Module (Core Business Logic)
 Entities
@@ -240,6 +258,13 @@ Policies:
 
 member can only see own
 
+
+
+
+
+
+
+
 6) Approval System Module (Generic)
 
 Instead of building approval separately for each module, make a small generic system.
@@ -260,6 +285,14 @@ Events + Notifications
 
 This makes your project look “enterprise”.
 
+
+
+
+
+
+
+
+
 7) Notifications + Realtime Module
 Endpoints
 
@@ -278,6 +311,10 @@ Broadcast notifications (Pusher now, Reverb later)
 Queue notifications
 
 Device tokens (optional) if you want push notifications later
+
+
+
+
 
 8) Admin Reporting Module (Simple but strong)
 Endpoints
@@ -302,6 +339,12 @@ DB indexes + optimized queries
 
 Caching for stats
 
+
+
+
+
+
+
 9) Testing Module
 What to cover (minimum)
 
@@ -322,6 +365,12 @@ PHP 8.2 → Pest v3 or PHPUnit
 Factories + seeders
 
 Fake notifications + fake events
+
+
+
+
+
+
 
 10) CI/CD (GitHub Actions)
 Pipeline steps
@@ -366,3 +415,6 @@ Notifications: DB + broadcast + queue
 Testing: feature tests for the critical flows
 
 CI: actions runner
+
+api versioning
+

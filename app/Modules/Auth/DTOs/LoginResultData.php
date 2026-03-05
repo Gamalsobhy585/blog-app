@@ -19,6 +19,7 @@ class LoginResultData
                 'name' => $this->user->name,
                 'email' => $this->user->email,
                 'created_at' => $this->user->created_at,
+                'roles' => $this->user->getRoleNames(),
                 
             ],
             'token' => $this->token,

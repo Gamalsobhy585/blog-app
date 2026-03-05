@@ -17,7 +17,6 @@ class ToggleUserStatusResultData
             'name' => $this->user->name,
             'email' => $this->user->email,
             'is_active' => $this->user->is_active,
-            'role' => $this->user->role,
         ];
     }
 }

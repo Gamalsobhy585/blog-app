@@ -41,14 +41,7 @@ class User extends Authenticatable
         'profile_photo_path',
 
     ];
-    public function getRoleNameAttribute(): string
-    {
-        return match ($this->role) {
-            2 => 'librarian',
-            3 => 'user',
-            default => 'unknown',
-        };
-    }
+
     public function getActiveStringAttribute(): string
     {
           return $this->is_active ? 'yes' : 'no';

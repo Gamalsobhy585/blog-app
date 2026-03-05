@@ -3,42 +3,28 @@
 use App\Modules\Author\Controllers\AuthorController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+
+    // ─── Public (authenticated) ───────────────────────────────────────────────
     Route::get('/authors', [AuthorController::class, 'index'])
         ->name('authors.index')
-        ->can('viewAny', 'App\Models\Author');
-        
-    Route::get('/authors/{author}', [AuthorController::class, 'show'])
-        ->name('authors.show')
-        ->can('view', 'author');
-});
+        ->middleware('permission:authors.view');
 
-// Librarian and Admin routes
-Route::middleware(['auth:sanctum', 'isLibrarian'])->group(function () {
-    // Create authors
-    Route::post('/authors', [AuthorController::class, 'store'])
-        ->name('authors.store')
-        ->can('create', 'App\Models\Author');
-    
-    // Update authors (policy will check if librarian created it)
-    Route::put('/authors/{author}', [AuthorController::class, 'update'])
-        ->name('authors.update')
-        ->can('update', 'author');
-        
-    Route::patch('/authors/{author}', [AuthorController::class, 'update'])
-        ->name('authors.patch')
-        ->can('update', 'author');
-});
+    // ─── Admin & Librarian ────────────────────────────────────────────────────
+    Route::middleware('role:admin|librarian')->group(function () {
+        Route::post('/authors', [AuthorController::class, 'store'])
+            ->name('authors.store');
 
-// Admin only routes
-Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
-    // Delete authors
-    Route::delete('/authors/{author}', [AuthorController::class, 'destroy'])
-        ->name('authors.destroy')
-        ->can('delete', 'author');
-    
-    // Approve authors
-    Route::post('/authors/{author}/approve', [AuthorController::class, 'approve'])
-        ->name('authors.approve')
-        ->can('approve', 'author');
+        Route::post('/authors/import', [AuthorController::class, 'import'])
+            ->name('authors.import');
+    });
+
+    // ─── Admin only ───────────────────────────────────────────────────────────
+    Route::middleware('role:admin')->group(function () {
+        Route::post('/authors/{author:uuid}/approve', [AuthorController::class, 'approve'])
+            ->name('authors.approve');
+
+        Route::post('/authors/{author:uuid}/reject', [AuthorController::class, 'reject'])
+            ->name('authors.reject');
+    });
 });

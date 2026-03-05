@@ -5,7 +5,7 @@ namespace App\Modules\Author\Actions;
 use App\Models\Author;
 use App\Modules\Author\DTOs\SearchAuthorData;
 use Elastic\Elasticsearch\Client;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\CursorPaginator;
 
 class ListAuthorsAction
 {
@@ -13,38 +13,43 @@ class ListAuthorsAction
         private readonly Client $client
     ) {}
 
-    public function execute(SearchAuthorData $data): LengthAwarePaginator
+    public function execute(SearchAuthorData $data): CursorPaginator
     {
         $query = Author::query();
 
-        // Approved scope
         if ($data->approved !== null) {
-            if ($data->approved) {
-                $query->approved();
-            } else {
-                $query->where('is_approved', false);
-            }
-        }
-
-        // Elasticsearch full-text search
-        if ($data->search) {
-            $authorIds = $this->searchWithElasticsearch($data->search);
-
-            // If ES gives no results -> force empty
-            if (empty($authorIds)) {
-                return new LengthAwarePaginator([], 0, $data->perPage, $data->page);
-            }
-
-            $query->whereIn('id', $authorIds);
+            $query->where('is_approved', $data->approved);
         }
 
         if ($data->nationality) {
             $query->where('nationality', $data->nationality);
         }
 
-        $query->orderBy($data->sortBy, $data->sortOrder);
+        if ($data->search) {
+            $authorIds = $this->searchWithElasticsearch($data->search);
 
-        return $query->paginate($data->perPage, ['*'], 'page', $data->page);
+            if (empty($authorIds)) {
+                return new CursorPaginator([], 'cursor', $data->perPage, [
+                    'path' => request()->url(),
+                    'query' => request()->query(),
+                ]);
+            }
+
+            $query->whereIn('id', $authorIds);
+        }
+
+        $sortBy = in_array($data->sortBy, ['created_at', 'name', 'id'], true) ? $data->sortBy : 'created_at';
+        $sortOrder = strtolower($data->sortOrder) === 'asc' ? 'asc' : 'desc';
+
+        $query->orderBy($sortBy, $sortOrder)
+              ->orderBy('id', $sortOrder); 
+
+        return $query->cursorPaginate(
+            perPage: $data->perPage,
+            columns: ['*'],
+            cursorName: 'cursor',
+            cursor: $data->cursor ? \Illuminate\Pagination\Cursor::fromEncoded($data->cursor) : null
+        );
     }
 
     private function searchWithElasticsearch(string $search): array
@@ -52,7 +57,7 @@ class ListAuthorsAction
         try {
             $index = config('elasticsearch.index.authors', 'authors');
 
-          $response = $this->client->search([
+            $response = $this->client->search([
                 'index' => $index,
                 'body'  => [
                     'query' => [
@@ -61,7 +66,7 @@ class ListAuthorsAction
                                 [
                                     'multi_match' => [
                                         'query'     => $search,
-                                        'fields'    => ['name^3', 'bio', 'nationality'],
+                                        'fields'    => ['name^3', 'bio', 'nationality', 'slug^2'],
                                         'fuzziness' => 'AUTO',
                                     ],
                                 ],
@@ -69,9 +74,9 @@ class ListAuthorsAction
                                     'wildcard' => [
                                         'name' => [
                                             'value' => "*{$search}*",
-                                            'case_insensitive' => true
-                                        ]
-                                    ]
+                                            'case_insensitive' => true,
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],
@@ -79,18 +84,20 @@ class ListAuthorsAction
                     'size' => 1000,
                 ],
             ]);
-            // New client returns object -> use asArray()
+
             $hits = $response->asArray()['hits']['hits'] ?? [];
 
             return collect($hits)
                 ->pluck('_source.id')
+                ->filter()
                 ->values()
                 ->toArray();
-        } catch (\Exception $e) {
-            // Fallback to DB search
-            return Author::where('name', 'like', "%{$search}%")
+        } catch (\Throwable $e) {
+            return Author::query()
+                ->where('name', 'like', "%{$search}%")
                 ->orWhere('bio', 'like', "%{$search}%")
                 ->orWhere('nationality', 'like', "%{$search}%")
+                ->orWhere('slug', 'like', "%{$search}%")
                 ->pluck('id')
                 ->toArray();
         }

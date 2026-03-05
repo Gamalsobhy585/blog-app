@@ -13,7 +13,9 @@ class SendAuthorApprovalNotification implements ShouldQueue
     public function handle(AuthorPendingApproval $event): void
     {
         // Get all admin users
-        $admins = User::where('role', 1)
+        $admins = User::whereHas('roles', function ($query) {
+                $query->where('name', 'admin');
+            })
             ->where('is_active', true)
             ->get();
 

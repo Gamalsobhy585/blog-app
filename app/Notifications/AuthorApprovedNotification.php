@@ -6,13 +6,12 @@ namespace App\Notifications;
 use App\Models\Author;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class AuthorPendingApprovalNotification extends Notification implements ShouldQueue
+class AuthorApprovedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -31,7 +30,7 @@ class AuthorPendingApprovalNotification extends Notification implements ShouldQu
     public function toArray($notifiable): array
     {
         return [
-            'type' => 'author_pending_approval',
+            'type' => 'author_approved',
             'author' => [
                 'uuid' => $this->author->uuid,
                 'name' => $this->author->name,
@@ -42,7 +41,7 @@ class AuthorPendingApprovalNotification extends Notification implements ShouldQu
                 'name' => $this->createdBy->name,
                 'email' => $this->createdBy->email,
             ],
-            'message' => "New author '{$this->author->name}' is pending approval",
+            'message' => "New author '{$this->author->name}' is approved",
         ];
     }
 
@@ -51,7 +50,7 @@ class AuthorPendingApprovalNotification extends Notification implements ShouldQu
     {
         return new BroadcastMessage([
             'id' => $this->id, // Notification ID for frontend tracking
-            'type' => 'author_pending_approval',
+            'type' => 'author_approved',
             'author' => [
                 'uuid' => $this->author->uuid,
                 'name' => $this->author->name,
@@ -61,7 +60,7 @@ class AuthorPendingApprovalNotification extends Notification implements ShouldQu
                 'name' => $this->createdBy->name,
                 'email' => $this->createdBy->email,
             ],
-            'message' => "New author '{$this->author->name}' is pending approval",
+            'message' => "New author '{$this->author->name}' is approved",
             'timestamp' => now()->toDateTimeString(),
         ]);
     }
@@ -69,11 +68,13 @@ class AuthorPendingApprovalNotification extends Notification implements ShouldQu
     public function broadcastOn(): array
     {
         return [
-            new Channel('admin-notifications')
+            new Channel('librarian-notifications')
         ];
     }
+
+
     public function broadcastAs(): string
     {
-        return 'author.pending.approval';
+        return 'author.approved';
     }
 }

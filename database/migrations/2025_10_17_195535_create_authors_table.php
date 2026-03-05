@@ -13,6 +13,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('name');
             $table->text('bio')->nullable();
+            $table->string('slug')->unique();
             $table->string('nationality')->nullable();
             $table->boolean('is_approved')->default(0);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
