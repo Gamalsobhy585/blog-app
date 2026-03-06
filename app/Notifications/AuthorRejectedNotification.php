@@ -5,11 +5,11 @@ namespace App\Notifications;
 
 use App\Models\Author;
 use App\Models\User;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Notifications\Notification;
 
 class AuthorRejectedNotification extends Notification implements ShouldQueue
 {
@@ -64,11 +64,10 @@ class AuthorRejectedNotification extends Notification implements ShouldQueue
             'timestamp' => now()->toDateTimeString(),
         ]);
     }
-
-    public function broadcastOn($notifiable) 
+    public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.' . $notifiable->id)
+            new Channel('admin-notifications')
         ];
     }
 

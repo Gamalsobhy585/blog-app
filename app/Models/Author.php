@@ -33,7 +33,6 @@ class Author extends Model
 
     protected $casts = [
         'is_approved' => 'boolean',
-         'is_approved' => 'bool',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
         'approval_status' => 'string',
