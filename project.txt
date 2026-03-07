@@ -131,13 +131,8 @@ POST /api/books (admin/librarian)
 
 GET /api/books/{uuid}
 
-PUT /api/books/{uuid} (admin/librarian)
 
-DELETE /api/books/{uuid} (admin)
 
-POST /api/books/{uuid}/publish (optional)
-
-POST /api/books/{uuid}/archive (optional)
 
 Filters (important)
 
@@ -175,13 +170,16 @@ books list
 
 book details
 
-Chunking:
 
-bulk import books from CSV (job)
+bulk import books from CSV (job) and chunking 5 by 5 
 aws s3 for storing book cover images 
 pusher for notifying admins when new book is added 
-
 setup horizon for running jobs and schedule tasks
+create Enums files to ehance modularity 
+create Exceptions files to enhance modularity 
+search using elasticsearch 
+searching by slugs instead of uuid and id 
+use audit packages to track changes and who made them
 
 
 
@@ -265,29 +263,6 @@ member can only see own
 
 
 
-6) Approval System Module (Generic)
-
-Instead of building approval separately for each module, make a small generic system.
-
-Endpoints
-
-GET /api/approvals (admin/librarian)
-
-POST /api/approvals/{uuid}/approve
-
-POST /api/approvals/{uuid}/reject
-
-Tech to use
-
-Polymorphic approvable_type / approvable_id
-
-Events + Notifications
-
-This makes your project look “enterprise”.
-
-
-
-
 
 
 
@@ -329,6 +304,10 @@ active borrowings
 
 overdue count
 
+
+
+learning db view 
+
 GET /api/admin/reports/borrowings?from=&to=
 
 GET /api/admin/reports/top-books
@@ -338,38 +317,6 @@ Tech to use
 DB indexes + optimized queries
 
 Caching for stats
-
-
-
-
-
-
-
-9) Testing Module
-What to cover (minimum)
-
-Auth: register/login
-
-Authors: create pending + approve
-
-Books: create/list/filter
-
-Borrow: request → approve → return
-
-Policy tests: unauthorized actions fail
-
-Tech to use
-
-PHP 8.2 → Pest v3 or PHPUnit
-
-Factories + seeders
-
-Fake notifications + fake events
-
-
-
-
-
 
 
 10) CI/CD (GitHub Actions)
