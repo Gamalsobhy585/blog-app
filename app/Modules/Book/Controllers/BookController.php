@@ -2,25 +2,25 @@
 
 namespace App\Modules\Book\Controllers;
 
+use App\Enums\BookApprovalStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Jobs\ImportBooksJob;
 use App\Models\Book;
-use App\Enums\BookApprovalStatusEnum;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Cache;
+use App\Modules\Book\Actions\ApproveBookAction;
+use App\Modules\Book\Actions\CreateBookAction;
+use App\Modules\Book\Actions\ListBooksAction;
+use App\Modules\Book\Actions\RejectBookAction;
+use App\Modules\Book\Actions\ShowBookAction;
 use App\Modules\Book\DTOs\BookData;
 use App\Modules\Book\DTOs\CreateBookData;
 use App\Modules\Book\DTOs\RejectBookData;
 use App\Modules\Book\DTOs\SearchBookData;
-use App\Modules\Book\Actions\ListBooksAction;
-use App\Modules\Book\Actions\CreateBookAction;
-use App\Modules\Book\Actions\RejectBookAction;
-use App\Modules\Book\Actions\ApproveBookAction;
-use App\Modules\Book\Requests\StoreBookRequest;
-use App\Modules\Book\Requests\SearchBookRequest;
-use App\Modules\Book\Requests\RejectBookRequest;
 use App\Modules\Book\Requests\ImportBooksRequest;
-
+use App\Modules\Book\Requests\RejectBookRequest;
+use App\Modules\Book\Requests\SearchBookRequest;
+use App\Modules\Book\Requests\StoreBookRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 class BookController extends Controller
 {
     public function index(SearchBookRequest $request, ListBooksAction $action): JsonResponse
@@ -113,4 +113,13 @@ class BookController extends Controller
             'message' => 'Import started successfully',
         ], 202);
     }
+    public function show(Book $book, ShowBookAction $action): JsonResponse
+    {
+        $book = $action->execute($book);
+
+        return response()->json([
+            'data' => BookData::fromModel($book)->toArray(),
+        ]);
+    }
+
 }

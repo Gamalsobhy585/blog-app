@@ -18,6 +18,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/books/import', [BookController::class, 'import'])
             ->name('books.import');
+
+        Route::get('/books/{book}', [BookController::class, 'show'])
+        ->name('books.show');
     });
 
     // ─── Admin only ───────────────────────────────────────────────────────────
