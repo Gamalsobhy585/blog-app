@@ -14,12 +14,23 @@ class SyncBookToSearchJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(public Book $book)
-    {
-    }
+    public int $tries = 3;
+    public int $timeout = 30;
+    public int $backoff = 5;
+
+    public function __construct(public Book $book) {}
 
     public function handle(BookSearchService $bookSearchService): void
     {
         $bookSearchService->index($this->book);
+    }
+
+    public function failed(\Throwable $exception): void
+    {
+        \Illuminate\Support\Facades\Log::error('SyncBookToSearchJob permanently failed', [
+            'book_id' => $this->book->id,
+            'slug'    => $this->book->slug,
+            'error'   => $exception->getMessage(),
+        ]);
     }
 }
